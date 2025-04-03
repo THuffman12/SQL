@@ -1,0 +1,24 @@
+# For this project I used SQL to query the superstore database to find information about products sold at the store.
+
+# Use a SELECT statement to pull up all information in the table for reference.
+SELECT *
+FROM superstore;
+
+#Use a SELECT statement to order items by price.
+SELECT item_name, price
+FROM superstore
+ORDER BY price DESC;
+
+#Show a statistic (AVG) about item prices. 
+SELECT AVG(price)
+FROM superstore;
+
+#Show a statistic (AVG) price of items in category 'Kitchen Supplies'.
+SELECT AVG(price)
+FROM superstore
+WHERE category = 'Kitchen Supplies';
+
+#Check inventory for stock_quanitiy of specific item 
+SELECT category, item_name, stock_quantity
+FROM superstore
+WHERE category = 'Electronics'AND item_name = 'Wireless Earbuds';
