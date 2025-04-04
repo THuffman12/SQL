@@ -1,0 +1,40 @@
+SELECT *
+FROM fortune_companies;
+
+--Which companies have healthcare_benefits AND avg_employee_tenure 5yrs and above.
+SELECT company_name
+,healthcare_benefits
+,avg_employee_tenure
+FROM fortune_companies
+WHERE healthcare_benefits ='1'
+AND avg_employee_tenure >5;
+
+--Calculate the AVG revenue per employee for companies with healthcare_benefits.(Revenue is in BIL)
+SELECT company_name
+,ROUND((revenue / employees)*1000000,2) AS avg_revenue_per_employee
+FROM fortune_companies
+WHERE healthcare_benefits ='1';
+
+--Classify companies by paid_time_off_days using CASE.
+SELECT company_name
+,paid_time_off_days,
+CASE
+	WHEN paid_time_off_days >=15  THEN 'Generous'
+    ELSE 'Standard'
+  END AS paid_time_off_rating  
+FROM fortune_companies;
+
+--List companies with less than 2500 employees AND offer healthcare_benefits using HAVING.
+SELECT company_name
+,healthcare_benefits
+,employees
+FROM fortune_companies
+GROUP BY company_name
+HAVING employees <2500 AND healthcare_benefits =1;
+
+--List the companies that have more than 6 weeks maternity_leave and avg_employee_tenure 5yrs and above. 
+SELECT company_name
+,maternity_leave_weeks
+,avg_employee_tenure
+FROM fortune_companies
+WHERE maternity_leave_weeks >=6 AND avg_employee_tenure >=5;
