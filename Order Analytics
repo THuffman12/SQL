@@ -1,15 +1,12 @@
 --In this SQL, I'm querying a database with multiple tables for customer order statistics. 
 
-SELECT *
-FROM JanSales;
-
 --Filtered the data by narrowing results by proper order id numbers.
 SELECT *
 FROM customers
 WHERE length (order_id)=6
 AND order_id <>'Order ID';
 
---1.How many many unique orders were placed in January? In other words, how many distinct order ids do we have?
+--1.How many many unique orders were placed in January? (How many distinct order ids do we have?)
 SELECT COUNT (distinct OrderID)
 FROM JanSales
 WHERE length (OrderID)=6
@@ -21,9 +18,6 @@ FROM JanSales
 WHERE Product ='iPhone'
 AND length (OrderID)=6
 AND OrderID <>'Order ID';
-
-SELECT *
-FROM customers;
 
 --3.Select the customer account numbers for all the orders that were placed in February.
 SELECT distinct acctnum
@@ -44,9 +38,6 @@ FROM JanSales
 WHERE length (OrderID)=6
 AND OrderID <>'Order ID'
 GROUP BY product;
-
-SELECT*
-FROM FebSales;
 
 --6.Which products were sold in February at 548 Lincoln St, Seattle, WA 98101, how many of each were sold, and what was the total revenue?
 SELECT 
@@ -69,3 +60,43 @@ SELECT distinct Product, SUM(quantity), location
 FROM FebSales
 WHERE location  LIKE '%Los Angeles%'
 GROUP BY Product;
+
+--9. Which locations in New York received at least 3 orders in January, and how many orders did they each receive? 
+SELECT distinct location, count(orderID)
+FROM JanSales
+WHERE location LIKE '%NY%'
+AND length (orderID) = 6
+AND orderID <>'Order ID'
+GROUP BY location
+HAVING count(orderID)>=3;
+
+--10. How many of each type of headphone were sold in February?
+SELECT distinct Product, sum(Quantity) AS TotalSold
+FROM FebSales
+WHERE length (orderID) = 6
+AND orderID <>'Order ID'
+AND Product LIKE '%Headphones%'
+GROUP BY Product;
+
+--11. What was the average amount spent per account in February?
+SELECT sum(Quantity*price)/count(cust.acctnum) AS AvgSpentPerAcct
+FROM FebSales Feb
+LEFT JOIN customers cust 
+ON Feb.orderID = cust.order_id
+WHERE length (orderID) = 6
+AND orderID <>'Order ID';
+
+--12. What was the average quantity of products purchased per account in February?
+SELECT sum(Quantity)/count(cust.acctnum) AS AvgQuantityPerAcct
+FROM FebSales Feb
+LEFT JOIN customers cust 
+ON Feb.orderID = cust.order_id
+WHERE length (orderID) = 6
+AND orderID <>'Order ID';
+
+--13. Which product brought in the most revenue in January and how much revenue did it bring in total?
+SELECT Product, sum(Quantity*price)AS Revenue
+FROM JanSales
+GROUP BY Product
+ORDER BY sum(Quantity*price) DESC
+LIMIT 1;
