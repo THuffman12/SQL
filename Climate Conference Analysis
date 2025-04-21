@@ -1,0 +1,47 @@
+--#1.LEFT JOIN: List of VIPs and what event they are scheduled to attend.
+SELECT vips.last_name, vips.first_name, events.event_type AS scheduled_event
+FROM events
+LEFT JOIN vips
+ON events.event_id = vips.event
+ORDER BY event_type; 
+
+--#2.INNER JOIN: Find out which VIPs have made dinner reservations.
+SELECT vips.last_name, vips.first_name
+FROM vips 
+INNER JOIN reservations 
+ON vips.member_id = reservations.member_id
+WHERE dinner_rsvp = 1;
+
+--#3. MULTIPLE JOINS: Identify which hotels the VIPs are staying at while attending the conference.
+SELECT vips.last_name, vips.first_name, reservations.hotel, hotels.hotel_name
+FROM vips 
+INNER JOIN reservations
+ON vips.member_id = reservations.member_id 
+
+LEFT JOIN hotels 
+ON reservations.hotel = hotels.hotel_id
+ORDER BY hotels.hotel_name;
+
+--#4.SELF JOIN: Find the VIPs that provide feedback (fb) to others and the corresponding recipients.
+SELECT v1.first_name AS fb_giver, v1.last_name AS fb_giver_last,
+		v2.first_name AS fb_rec, v2.last_name AS fb_rec_last
+FROM vips v1
+JOIN vips v2 
+ON v1.provides_feedback_to = v2.member_id;
+
+--#5.CUSTOM QUERY: Identify Government-affiliated VIPs and order by oldest to newest membership status. 
+SELECT vips.last_name, vips.first_name, vips.member_since
+FROM vips
+JOIN reservations
+ON vips.member_id = reservations.member_id
+WHERE assoc_type = 'government'
+GROUP BY member_since
+ORDER BY member_since asc;
+
+--#6.CUSTOM QUERY: How many VIPs RSVP'd for both the welcome party and a dinner reservation. 
+SELECT COUNT(vips.member_id) AS rsvp_both
+FROM vips
+JOIN reservations 
+ON vips.member_id = reservations.member_id
+WHERE welcome_rsvp = 1
+AND dinner_rsvp =1;
